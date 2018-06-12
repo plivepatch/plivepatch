@@ -142,12 +142,12 @@ void ptrace_write(int pid, unsigned long addr, void *vptr, int len)
 {
     int count;
     long word;
- 
+
     count = 0;
     while(count < len) {
         memcpy(&word, vptr + count, sizeof(word));
         word = ptrace(PTRACE_POKETEXT, pid, addr + count, word);
-        count += 4;
+        count += sizeof(long);
  
         if(errno != 0)
             printf("ptrace_write failed\t %ld\n", addr + count);
@@ -201,7 +201,7 @@ unsigned int ptrace_readstr(int pid, unsigned long addr, char *buf, unsigned int
     }
     
     if (i < len) {
-	memset(buf,0,len);
+	    memset(buf,0,len);
     	strncpy(buf, str, i);
     }
 
@@ -209,7 +209,7 @@ unsigned int ptrace_readstr(int pid, unsigned long addr, char *buf, unsigned int
 }
 
 /* 取得指向link_map链表首项的指针 */
-struct link_map * get_linkmap(int pid)
+struct link_map* get_linkmap(int pid)
 {
     int i;
     Elf_Ehdr *ehdr = (Elf_Ehdr *) malloc(sizeof(Elf_Ehdr)); 
